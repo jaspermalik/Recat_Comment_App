@@ -1,29 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import wrapWithLoadData from './wrapWithLoadData'
 
 class ComponentInput extends Component {
   static propTypes = {
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    data: PropTypes.any,
+    saveData: PropTypes.func
   }
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      username: '',
+      username: props.data,
       content: ''
     }
   }
   componentDidMount() {
     this.textarea.focus()
-  }
-  componentWillMount() {
-    this._loadUsername()
-  }
-  _saveUsername(username) {
-    localStorage.setItem('username', username)
-  }
-  _loadUsername() {
-    const username = localStorage.getItem('username')
-    username && this.setState({ username })
   }
   handleUsernameChange(e) {
     this.setState({
@@ -43,7 +36,7 @@ class ComponentInput extends Component {
     }
   }
   handleUsernameBlur(e) {
-    this._saveUsername(e.target.value)
+    this.props.saveData(e.target.value)
   }
   render() {
     return (
@@ -75,5 +68,5 @@ class ComponentInput extends Component {
     )
   }
 }
-
+ComponentInput = wrapWithLoadData(ComponentInput, 'username')
 export default ComponentInput
