@@ -3,27 +3,27 @@ import PropTypes from 'prop-types'
 
 class ComponentInput extends Component {
   static propTypes = {
-    onSubmit: PropTypes.func
+    username: PropTypes.any,
+    onSubmit: PropTypes.func,
+    onUserNameInputBlur: PropTypes.func
   }
-  constructor() {
-    super()
+  static defaultProps = {
+    username: ''
+  }
+  constructor(props) {
+    super(props)
     this.state = {
-      username: '',
+      username: props.username,
       content: ''
     }
   }
   componentDidMount() {
     this.textarea.focus()
   }
-  componentWillMount() {
-    this._loadUsername()
-  }
-  _saveUsername(username) {
-    localStorage.setItem('username', username)
-  }
-  _loadUsername() {
-    const username = localStorage.getItem('username')
-    username && this.setState({ username })
+  handleUsernameBlur(e) {
+    if (this.props.onUserNameInputBlur) {
+      this.props.onUserNameInputBlur(e.target.value)
+    }
   }
   handleUsernameChange(e) {
     this.setState({
@@ -41,9 +41,6 @@ class ComponentInput extends Component {
       this.props.onSubmit({ username, content, createdTime: +new Date() })
       this.setState({ content: '' })
     }
-  }
-  handleUsernameBlur(e) {
-    this._saveUsername(e.target.value)
   }
   render() {
     return (
